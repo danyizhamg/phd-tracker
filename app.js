@@ -574,12 +574,104 @@ function downloadMaterial(tab, ext) {
   const o = currentModalOpp || { university: 'PhD', id: 'material' };
   const text = document.getElementById(`material-${tab}`).textContent;
   const names = { cv: 'CV', cl: 'CoverLetter', rp: 'ResearchProposal' };
-  const filename = `ZhangDanyi_${names[tab]}_${o.university.replace(/\s/g,'')}.${ext}`;
+  const filename = `ZhangDanyi_${names[tab]}_${o.university.replace(/\s/g,'')}`.replace(/[^a-zA-Z0-9_]/g,'');
+
+  if (ext === 'pdf') {
+    downloadPDF(tab, text, filename);
+    return;
+  }
+
   const blob = new Blob([text], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = filename;
+  a.download = `${filename}.${ext}`;
   a.click();
+}
+
+function downloadPDF(tab, text, filename) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+  const margin = 20;
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const maxW = pageW - margin * 2;
+  const lineH = 5.5;
+
+  // Header bar
+  doc.setFillColor(26, 39, 68);
+  doc.rect(0, 0, pageW, 14, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  const labels = { cv: 'CURRICULUM VITAE', cl: 'COVER LETTER', rp: 'RESEARCH PROPOSAL' };
+  doc.text(labels[tab] || 'DOCUMENT', margin, 9);
+  doc.text('Zhang Danyi', pageW - margin, 9, { align: 'right' });
+
+  // Body text
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(9.5);
+  doc.setFont('courier', 'normal');
+
+  const lines = doc.splitTextToSize(text, maxW);
+  let y = 22;
+
+  lines.forEach(line => {
+    if (y + lineH > pageH - 14) {
+      doc.addPage();
+      // Repeat header on new page
+      doc.setFillColor(26, 39, 68);
+      doc.rect(0, 0, pageW, 14, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(labels[tab] || 'DOCUMENT', margin, 9);
+      doc.text('Zhang Danyi', pageW - margin, 9, { align: 'right' });
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(9.5);
+      doc.setFont('courier', 'normal');
+      y = 22;
+    }
+
+    // Style section headers (lines of = signs or ALL CAPS short lines)
+    if (/^═+$/.test(line.trim())) {
+      doc.setDrawColor(232, 51, 74);
+      doc.setLineWidth(0.4);
+      doc.line(margin, y - 1, pageW - margin, y - 1);
+      y += 1;
+      return;
+    }
+
+    // Bold headings (short all-caps lines)
+    if (/^[A-Z\s&\/]{4,40}$/.test(line.trim()) && line.trim().length > 3) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.8);
+      doc.setTextColor(26, 39, 68);
+      doc.text(line, margin, y);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(30, 30, 30);
+    } else {
+      doc.text(line, margin, y);
+    }
+    y += lineH;
+  });
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFillColor(248, 250, 253);
+    doc.rect(0, pageH - 10, pageW, 10, 'F');
+    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Page ${i} of ${pageCount}`, pageW / 2, pageH - 4, { align: 'center' });
+    const o = currentModalOpp;
+    if (o) doc.text(`${o.university} · ${o.title.slice(0,50)}`, margin, pageH - 4);
+  }
+
+  doc.save(`${filename}.pdf`);
 }
 
 // ── Event listeners ────────────────────────────────────────
