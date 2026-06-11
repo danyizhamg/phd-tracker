@@ -368,6 +368,217 @@ select:focus { border-color: #1a2744; }
 }
 .btn-modal-link:hover { background: #e8334a; }
 
+/* ── Materials Panel ── */
+.panel-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1100;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.panel-overlay.open { display: flex; }
+
+.panel-box {
+  background: white;
+  width: min(720px, 100vw);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.panel-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2744;
+  margin-bottom: 4px;
+}
+.panel-subtitle {
+  font-size: 0.82rem;
+  color: #718096;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  padding: 0 28px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-shrink: 0;
+  background: #f8fafd;
+}
+.tab-btn {
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #718096;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab-btn.active {
+  color: #1a2744;
+  border-bottom-color: #e8334a;
+}
+.tab-btn:hover:not(.active) { color: #2d3748; }
+
+/* Tab panels */
+.tab-panel { display: none; flex-direction: column; height: 100%; }
+.tab-panel.active { display: flex; }
+
+/* Loading */
+.panel-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #718096;
+  padding: 40px;
+  text-align: center;
+}
+.panel-loading p { margin: 0; font-size: 0.95rem; }
+.loading-hint { font-size: 0.8rem !important; opacity: 0.7; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #1a2744;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Content */
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.material-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 28px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  background: #f8fafd;
+}
+.btn-copy, .btn-download {
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: all 0.15s;
+}
+.btn-copy {
+  background: #1a2744;
+  color: white;
+  border-color: #1a2744;
+}
+.btn-copy:hover { background: #e8334a; border-color: #e8334a; }
+.btn-download {
+  background: white;
+  color: #1a2744;
+  border-color: #d0d7e6;
+}
+.btn-download:hover { border-color: #1a2744; }
+
+.material-text {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #2d3748;
+  white-space: pre-wrap;
+  font-family: 'Courier New', Courier, monospace;
+  background: #fafbfd;
+}
+
+/* Error */
+.panel-error {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #718096;
+  padding: 40px;
+  text-align: center;
+}
+.btn-retry {
+  padding: 10px 24px;
+  background: #1a2744;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+.btn-retry:hover { background: #e8334a; }
+
+/* Notice */
+.panel-notice {
+  padding: 14px 28px;
+  background: #f0fdf4;
+  border-top: 1px solid #bbf7d0;
+  font-size: 0.82rem;
+  color: #166534;
+  flex-shrink: 0;
+}
+.panel-notice p { margin: 2px 0; }
+
+/* Generate button in modal */
+.btn-generate {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #e8334a, #c0272d);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  text-align: center;
+}
+.btn-generate:hover { opacity: 0.92; transform: translateY(-1px); }
+.btn-generate:active { transform: translateY(0); }
+
+/* Copy success flash */
+.copy-success {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+}
+
 /* ── Footer ── */
 .site-footer {
   text-align: center;
