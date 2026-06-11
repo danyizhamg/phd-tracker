@@ -81,6 +81,73 @@
     </div>
   </div>
 
+  <!-- MATERIALS PANEL -->
+  <div class="panel-overlay" id="panel-overlay">
+    <div class="panel-box" id="panel-box">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">📄 申请材料生成器</h2>
+          <p class="panel-subtitle" id="panel-subtitle">正在为你生成针对该职位的定制材料…</p>
+        </div>
+        <button class="modal-close" id="panel-close">✕</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="cv">简历 CV</button>
+        <button class="tab-btn" data-tab="cl">动机信 Cover Letter</button>
+        <button class="tab-btn" data-tab="rp">研究计划 RP</button>
+      </div>
+
+      <!-- Loading state -->
+      <div class="panel-loading" id="panel-loading">
+        <div class="spinner"></div>
+        <p>AI 正在根据职位要求改写你的材料，请稍候…</p>
+        <p class="loading-hint">通常需要 30–60 秒</p>
+      </div>
+
+      <!-- Content -->
+      <div class="panel-content" id="panel-content" style="display:none">
+        <div class="tab-panel active" id="tab-cv">
+          <div class="material-toolbar">
+            <button class="btn-copy" onclick="copyMaterial('cv')">📋 复制</button>
+            <button class="btn-download" onclick="downloadMaterial('cv', 'txt')">⬇ 下载 TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('cv', 'md')">⬇ 下载 MD</button>
+          </div>
+          <div class="material-text" id="material-cv"></div>
+        </div>
+        <div class="tab-panel" id="tab-cl">
+          <div class="material-toolbar">
+            <button class="btn-copy" onclick="copyMaterial('cl')">📋 复制</button>
+            <button class="btn-download" onclick="downloadMaterial('cl', 'txt')">⬇ 下载 TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('cl', 'md')">⬇ 下载 MD</button>
+          </div>
+          <div class="material-text" id="material-cl"></div>
+        </div>
+        <div class="tab-panel" id="tab-rp">
+          <div class="material-toolbar">
+            <button class="btn-copy" onclick="copyMaterial('rp')">📋 复制</button>
+            <button class="btn-download" onclick="downloadMaterial('rp', 'txt')">⬇ 下载 TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('rp', 'md')">⬇ 下载 MD</button>
+          </div>
+          <div class="material-text" id="material-rp"></div>
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div class="panel-error" id="panel-error" style="display:none">
+        <p>⚠️ 生成失败，请重试。</p>
+        <button class="btn-retry" id="btn-retry">重试</button>
+      </div>
+
+      <!-- Notice -->
+      <div class="panel-notice" id="panel-notice" style="display:none">
+        <p>✅ 材料已生成！这是基于你的背景和该职位要求的定制版本。</p>
+        <p>建议仔细审阅后再提交，如需调整可以直接告诉 Zi Yong。</p>
+      </div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="site-footer">
     <p>Data sourced from public academic job boards. Updated daily.</p>
