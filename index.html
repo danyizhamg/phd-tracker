@@ -134,6 +134,45 @@
         </div>
       </div>
 
+        <!-- ORIGINAL DOCUMENTS SECTION -->
+        <div class="docs-section">
+          <div class="docs-section-title">📎 Original Application Documents</div>
+          <p class="docs-section-desc">Paste or upload your original CV, Personal Statement, and Research Proposal. These will be used to generate more accurate tailored materials.</p>
+
+          <div class="doc-upload-group">
+            <div class="doc-header">
+              <label class="doc-label">📄 CV / Résumé</label>
+              <label class="btn-upload-file" for="upload-cv">⬆ Upload File</label>
+              <input type="file" id="upload-cv" accept=".txt,.md,.pdf" style="display:none" />
+              <button class="btn-clear-doc" onclick="clearDoc('cv')">✕ Clear</button>
+            </div>
+            <textarea id="p-cv-text" rows="6" placeholder="Paste your full CV text here, or upload a file above…"></textarea>
+            <div class="doc-char-count" id="cv-count">0 characters</div>
+          </div>
+
+          <div class="doc-upload-group">
+            <div class="doc-header">
+              <label class="doc-label">✍️ Personal Statement</label>
+              <label class="btn-upload-file" for="upload-ps">⬆ Upload File</label>
+              <input type="file" id="upload-ps" accept=".txt,.md,.pdf" style="display:none" />
+              <button class="btn-clear-doc" onclick="clearDoc('ps')">✕ Clear</button>
+            </div>
+            <textarea id="p-ps-text" rows="6" placeholder="Paste your full Personal Statement here, or upload a file above…"></textarea>
+            <div class="doc-char-count" id="ps-count">0 characters</div>
+          </div>
+
+          <div class="doc-upload-group">
+            <div class="doc-header">
+              <label class="doc-label">🔬 Research Proposal</label>
+              <label class="btn-upload-file" for="upload-rp">⬆ Upload File</label>
+              <input type="file" id="upload-rp" accept=".txt,.md,.pdf" style="display:none" />
+              <button class="btn-clear-doc" onclick="clearDoc('rp')">✕ Clear</button>
+            </div>
+            <textarea id="p-rp-text" rows="6" placeholder="Paste your full Research Proposal here, or upload a file above…"></textarea>
+            <div class="doc-char-count" id="rp-count">0 characters</div>
+          </div>
+        </div>
+
       <div class="profile-actions">
         <button class="btn-save-profile" id="btn-save-profile">💾 Save Profile</button>
         <button class="btn-clear-profile" id="btn-clear-profile">🗑 Clear</button>
