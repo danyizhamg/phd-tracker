@@ -82,6 +82,13 @@ function openProfileModal() {
   document.getElementById('p-work').value    = p?.work    || '';
   document.getElementById('p-lang').value    = p?.lang    || '';
   document.getElementById('p-refs').value    = p?.refs    || '';
+  // Restore original documents
+  document.getElementById('p-cv-text').value = p?.cvText  || '';
+  document.getElementById('p-ps-text').value = p?.psText  || '';
+  document.getElementById('p-rp-text').value = p?.rpText  || '';
+  updateCharCount('p-cv-text', 'cv-count');
+  updateCharCount('p-ps-text', 'ps-count');
+  updateCharCount('p-rp-text', 'rp-count');
 
   renderInterestTags();
   document.getElementById('profile-overlay').classList.add('open');
@@ -103,12 +110,94 @@ function collectAndSaveProfile() {
     work:     document.getElementById('p-work').value.trim(),
     lang:     document.getElementById('p-lang').value.trim(),
     refs:     document.getElementById('p-refs').value.trim(),
+    cvText:   document.getElementById('p-cv-text').value.trim(),
+    psText:   document.getElementById('p-ps-text').value.trim(),
+    rpText:   document.getElementById('p-rp-text').value.trim(),
   };
   saveProfile(p);
   userProfile = p;
   closeProfileModal();
   applyUserProfile();
   applyFilters();
+}
+
+// ── Document upload helpers ────────────────────────────────────────────────────────────────
+function setupDocUpload(inputId, textareaId, countId) {
+  document.getElementById(inputId).addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const textarea = document.getElementById(textareaId);
+    const countEl  = document.getElementById(countId);
+
+    try {
+      let text = '';
+      if (file.type === 'application/pdf') {
+        // PDF: read as ArrayBuffer, extract text layer if readable
+        const buf = await file.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        // Simple extraction: grab readable ASCII runs from PDF
+        let raw = '';
+        for (let i = 0; i < bytes.length; i++) {
+          const c = bytes[i];
+          if (c >= 32 && c < 127) raw += String.fromCharCode(c);
+          else if (c === 10 || c === 13) raw += '\n';
+        }
+        // Extract text between BT and ET markers (PDF text blocks)
+        const btMatches = raw.match(/BT\s+([\s\S]*?)ET/g) || [];
+        if (btMatches.length > 0) {
+          text = btMatches
+            .map(block => {
+              const strMatches = block.match(/\(([^)]{2,})\)/g) || [];
+              return strMatches.map(s => s.slice(1,-1)).join(' ');
+            })
+            .join('\n')
+            .replace(/\s{3,}/g, '\n')
+            .trim();
+        }
+        if (!text || text.length < 100) {
+          // Fallback: just grab readable text runs
+          text = raw.replace(/[^\x20-\x7E\n]/g, ' ').replace(/ {4,}/g, '\n').trim();
+        }
+        if (!text || text.length < 50) {
+          textarea.value = '';
+          countEl.textContent = '⚠️ PDF text could not be extracted automatically. Please paste the text manually.';
+          countEl.style.color = '#e8334a';
+          return;
+        }
+      } else {
+        // Plain text / markdown
+        text = await file.text();
+      }
+      textarea.value = text;
+      updateCharCount(textareaId, countId);
+      countEl.style.color = '#38a169';
+      setTimeout(() => { countEl.style.color = ''; }, 2000);
+    } catch (err) {
+      countEl.textContent = '⚠️ Upload failed: ' + err.message;
+      countEl.style.color = '#e8334a';
+    }
+    // Reset file input so same file can be re-uploaded
+    e.target.value = '';
+  });
+
+  document.getElementById(textareaId).addEventListener('input', () =>
+    updateCharCount(textareaId, countId)
+  );
+}
+
+function updateCharCount(textareaId, countId) {
+  const len = document.getElementById(textareaId).value.length;
+  const el  = document.getElementById(countId);
+  el.textContent = len.toLocaleString() + ' characters';
+  el.style.color = len > 10000 ? '#e8334a' : len > 0 ? '#38a169' : '';
+}
+
+function clearDoc(type) {
+  const map = { cv: ['p-cv-text','cv-count'], ps: ['p-ps-text','ps-count'], rp: ['p-rp-text','rp-count'] };
+  const [tid, cid] = map[type];
+  document.getElementById(tid).value = '';
+  document.getElementById(cid).textContent = '0 characters';
+  document.getElementById(cid).style.color = '';
 }
 
 function clearProfile() {
@@ -430,6 +519,11 @@ async function generateWithTemplate(o) {
     : o.status === 'upcoming' ? 'TBD'
     : new Date(o.deadline).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
 
+  // If user uploaded original docs, use them as base with a tailoring note
+  const hasCv = p.cvText && p.cvText.length > 100;
+  const hasPs = p.psText && p.psText.length > 100;
+  const hasRp = p.rpText && p.rpText.length > 100;
+
   // ── CV ──
   const cv =
 `${name.toUpperCase()}
@@ -542,7 +636,32 @@ Methodological: [Novel method/framework you will develop]
 Empirical:      [First/novel empirical evidence in ${o.country} context]
 Policy:         [Actionable insights for ${fields} governance]`;
 
-  return { cv, cl, rp };
+  // If original docs uploaded, prepend a tailoring instruction banner
+  const tailorBanner = (docType, original) => {
+    const labels = { CV: 'CV', PS: 'Personal Statement', RP: 'Research Proposal' };
+    return `──────────────────────────────────────────────────
+★ TAILORING GUIDE FOR: ${labels[docType]}
+Target: ${o.flag} ${o.university} · ${o.title}
+Field:  ${fields}
+Deadline: ${deadline}
+
+Key points to emphasise for this position:
+→ ${(o.field||[]).slice(0,2).join(' and ')} focus
+→ ${o.supervisor ? 'Align with ' + o.supervisor + '\'s research agenda' : 'Research group alignment'}
+→ Highlight quantitative / methodological strengths relevant to ${o.field[0]||fields}
+──────────────────────────────────────────────────
+
+YOUR ORIGINAL ${labels[docType]}:
+(Edit the text below, guided by the tailoring notes above)
+
+${original}`;
+  };
+
+  const finalCv = hasCv ? tailorBanner('CV', p.cvText) : cv;
+  const finalCl = hasPs ? tailorBanner('PS', p.psText) : cl;
+  const finalRp = hasRp ? tailorBanner('RP', p.rpText) : rp;
+
+  return { cv: finalCv, cl: finalCl, rp: finalRp };
 }
 
 function showMaterials(materials) {
@@ -693,6 +812,10 @@ document.addEventListener('keydown', e => {
   .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
 
 // ── Init ───────────────────────────────────────────────────
+setupDocUpload('upload-cv', 'p-cv-text', 'cv-count');
+setupDocUpload('upload-ps', 'p-ps-text', 'ps-count');
+setupDocUpload('upload-rp', 'p-rp-text', 'rp-count');
+
 userProfile = loadProfile();
 applyUserProfile();
 
