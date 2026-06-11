@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PhD Opportunities Tracker</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- jsPDF for PDF download -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -20,6 +18,7 @@
       <div class="header-stats">
         <div class="stat-pill" id="total-count">— positions</div>
         <div class="stat-pill" id="last-updated">Loading…</div>
+        <button class="btn-profile" id="btn-open-profile">⚙️ My Profile</button>
       </div>
     </div>
   </header>
@@ -31,10 +30,6 @@
 
       <select id="filter-field">
         <option value="all">All Fields</option>
-        <option value="Data Science">Data Science / AI</option>
-        <option value="Environmental">Environmental / Climate</option>
-        <option value="Economics">Economics</option>
-        <option value="Sustainability">Sustainability</option>
       </select>
 
       <select id="filter-region">
@@ -65,6 +60,14 @@
     </div>
   </div>
 
+  <!-- MY INTERESTS BAR (shown when profile set) -->
+  <div class="interests-bar" id="interests-bar" style="display:none">
+    <span class="interests-label">🎯 My interests:</span>
+    <div class="interests-tags" id="interests-tags"></div>
+    <button class="btn-filter-mine" id="btn-filter-mine">Show matching only</button>
+    <button class="btn-filter-all" id="btn-filter-all" style="display:none">Show all</button>
+  </div>
+
   <!-- RESULTS COUNT -->
   <div class="results-bar">
     <span id="results-count">Loading…</span>
@@ -75,7 +78,72 @@
     <div class="loading-spinner">Loading opportunities…</div>
   </main>
 
-  <!-- MODAL -->
+  <!-- ═══════════════════════════════════════════════════════
+       PROFILE MODAL
+  ════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="profile-overlay">
+    <div class="modal-box profile-modal-box" id="profile-box">
+      <button class="modal-close" id="profile-close">✕</button>
+      <h2 class="profile-title">👤 Your Profile</h2>
+      <p class="profile-desc">Fill in your background so the tracker can match opportunities and generate tailored application materials for you.</p>
+
+      <div class="profile-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="p-name" placeholder="e.g. Zhang Danyi" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="p-email" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Highest Degree &amp; Field</label>
+          <input type="text" id="p-degree" placeholder="e.g. MSc Environmental Modeling, UCL (2025)" />
+        </div>
+        <div class="form-group">
+          <label>Previous Degree</label>
+          <input type="text" id="p-degree2" placeholder="e.g. BSc Financial Mathematics, University of Liverpool (2024)" />
+        </div>
+        <div class="form-group">
+          <label>Research Interests <span class="label-hint">(these will be your search tags)</span></label>
+          <div class="tag-input-wrap">
+            <div class="tag-list" id="interest-tag-list"></div>
+            <input type="text" id="interest-input" placeholder="Type a topic and press Enter…" />
+          </div>
+          <p class="field-hint">e.g. Climate Policy, Data Science, Environmental Economics, NLP, Sustainability…</p>
+        </div>
+        <div class="form-group">
+          <label>Key Skills &amp; Tools</label>
+          <textarea id="p-skills" rows="3" placeholder="e.g. Python, R, SQL, Machine Learning, GIS, Time Series Analysis, Econometrics…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Research Experience <span class="label-hint">(brief, one per line)</span></label>
+          <textarea id="p-research" rows="4" placeholder="e.g. Research Assistant at CITIC Securities — ML models for market prediction&#10;NLP project — knowledge graph construction at iFlytek"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Work Experience <span class="label-hint">(brief, one per line)</span></label>
+          <textarea id="p-work" rows="3" placeholder="e.g. Risk Consulting Intern — Deloitte China&#10;Data Analysis Intern — Cryptoracle Malaysia"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Languages</label>
+          <input type="text" id="p-lang" placeholder="e.g. English (IELTS 8), Chinese (native)" />
+        </div>
+        <div class="form-group">
+          <label>Referees <span class="label-hint">(name + email, one per line)</span></label>
+          <textarea id="p-refs" rows="2" placeholder="Dr. Jane Smith, j.smith@ucl.ac.uk&#10;Prof. Li Wei, li.wei@xjtlu.edu.cn"></textarea>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn-save-profile" id="btn-save-profile">💾 Save Profile</button>
+        <button class="btn-clear-profile" id="btn-clear-profile">🗑 Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       POSITION MODAL
+  ════════════════════════════════════════════════════════ -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal-box" id="modal-box">
       <button class="modal-close" id="modal-close">✕</button>
@@ -83,36 +151,35 @@
     </div>
   </div>
 
-  <!-- MATERIALS PANEL -->
+  <!-- ═══════════════════════════════════════════════════════
+       MATERIALS PANEL
+  ════════════════════════════════════════════════════════ -->
   <div class="panel-overlay" id="panel-overlay">
     <div class="panel-box" id="panel-box">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">📄 申请材料生成器</h2>
-          <p class="panel-subtitle" id="panel-subtitle">正在为你生成针对该职位的定制材料…</p>
+          <h2 class="panel-title">📄 Application Materials Generator</h2>
+          <p class="panel-subtitle" id="panel-subtitle">Generating tailored materials…</p>
         </div>
         <button class="modal-close" id="panel-close">✕</button>
       </div>
 
-      <!-- Tabs -->
       <div class="tab-bar">
-        <button class="tab-btn active" data-tab="cv">简历 CV</button>
-        <button class="tab-btn" data-tab="cl">动机信 Cover Letter</button>
-        <button class="tab-btn" data-tab="rp">研究计划 RP</button>
+        <button class="tab-btn active" data-tab="cv">CV</button>
+        <button class="tab-btn" data-tab="cl">Cover Letter</button>
+        <button class="tab-btn" data-tab="rp">Research Proposal</button>
       </div>
 
-      <!-- Loading state -->
       <div class="panel-loading" id="panel-loading">
         <div class="spinner"></div>
-        <p>AI 正在根据职位要求改写你的材料，请稍候…</p>
-        <p class="loading-hint">通常需要 30–60 秒</p>
+        <p>Generating your tailored materials…</p>
+        <p class="loading-hint">This takes about 1–2 seconds</p>
       </div>
 
-      <!-- Content -->
       <div class="panel-content" id="panel-content" style="display:none">
         <div class="tab-panel active" id="tab-cv">
           <div class="material-toolbar">
-            <button class="btn-copy" onclick="copyMaterial('cv')">📋 复制</button>
+            <button class="btn-copy" onclick="copyMaterial('cv')">📋 Copy</button>
             <button class="btn-download" onclick="downloadMaterial('cv', 'pdf')">⬇ PDF</button>
             <button class="btn-download" onclick="downloadMaterial('cv', 'txt')">⬇ TXT</button>
             <button class="btn-download" onclick="downloadMaterial('cv', 'md')">⬇ MD</button>
@@ -121,7 +188,7 @@
         </div>
         <div class="tab-panel" id="tab-cl">
           <div class="material-toolbar">
-            <button class="btn-copy" onclick="copyMaterial('cl')">📋 复制</button>
+            <button class="btn-copy" onclick="copyMaterial('cl')">📋 Copy</button>
             <button class="btn-download" onclick="downloadMaterial('cl', 'pdf')">⬇ PDF</button>
             <button class="btn-download" onclick="downloadMaterial('cl', 'txt')">⬇ TXT</button>
             <button class="btn-download" onclick="downloadMaterial('cl', 'md')">⬇ MD</button>
@@ -130,7 +197,7 @@
         </div>
         <div class="tab-panel" id="tab-rp">
           <div class="material-toolbar">
-            <button class="btn-copy" onclick="copyMaterial('rp')">📋 复制</button>
+            <button class="btn-copy" onclick="copyMaterial('rp')">📋 Copy</button>
             <button class="btn-download" onclick="downloadMaterial('rp', 'pdf')">⬇ PDF</button>
             <button class="btn-download" onclick="downloadMaterial('rp', 'txt')">⬇ TXT</button>
             <button class="btn-download" onclick="downloadMaterial('rp', 'md')">⬇ MD</button>
@@ -139,16 +206,14 @@
         </div>
       </div>
 
-      <!-- Error state -->
       <div class="panel-error" id="panel-error" style="display:none">
-        <p>⚠️ 生成失败，请重试。</p>
-        <button class="btn-retry" id="btn-retry">重试</button>
+        <p>⚠️ Generation failed. Please try again.</p>
+        <button class="btn-retry" id="btn-retry">Retry</button>
       </div>
 
-      <!-- Notice -->
       <div class="panel-notice" id="panel-notice" style="display:none">
-        <p>✅ 材料已生成！这是基于你的背景和该职位要求的定制版本。</p>
-        <p>建议仔细审阅后再提交，如需调整可以直接告诉 Zi Yong。</p>
+        <p>✅ Materials generated based on your profile and this position's requirements.</p>
+        <p>Review carefully before submitting. For a deeper custom version, paste the position info to your AI assistant.</p>
       </div>
     </div>
   </div>
@@ -156,7 +221,6 @@
   <!-- FOOTER -->
   <footer class="site-footer">
     <p>Data sourced from public academic job boards. Updated daily.</p>
-    <p class="footer-hint">To add opportunities: edit <code>data/opportunities.json</code> and push to GitHub.</p>
   </footer>
 
   <script src="app.js"></script>
