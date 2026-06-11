@@ -589,89 +589,74 @@ function downloadMaterial(tab, ext) {
 }
 
 function downloadPDF(tab, text, filename) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const o = currentModalOpp || {};
+  const labels = { cv: 'Curriculum Vitae', cl: 'Cover Letter', rp: 'Research Proposal' };
+  const label = labels[tab] || 'Document';
 
-  const margin = 20;
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const maxW = pageW - margin * 2;
-  const lineH = 5.5;
-
-  // Header bar
-  doc.setFillColor(26, 39, 68);
-  doc.rect(0, 0, pageW, 14, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'bold');
-  const labels = { cv: 'CURRICULUM VITAE', cl: 'COVER LETTER', rp: 'RESEARCH PROPOSAL' };
-  doc.text(labels[tab] || 'DOCUMENT', margin, 9);
-  doc.text('Zhang Danyi', pageW - margin, 9, { align: 'right' });
-
-  // Body text
-  doc.setTextColor(30, 30, 30);
-  doc.setFontSize(9.5);
-  doc.setFont('courier', 'normal');
-
-  const lines = doc.splitTextToSize(text, maxW);
-  let y = 22;
-
-  lines.forEach(line => {
-    if (y + lineH > pageH - 14) {
-      doc.addPage();
-      // Repeat header on new page
-      doc.setFillColor(26, 39, 68);
-      doc.rect(0, 0, pageW, 14, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text(labels[tab] || 'DOCUMENT', margin, 9);
-      doc.text('Zhang Danyi', pageW - margin, 9, { align: 'right' });
-      doc.setTextColor(30, 30, 30);
-      doc.setFontSize(9.5);
-      doc.setFont('courier', 'normal');
-      y = 22;
-    }
-
-    // Style section headers (lines of = signs or ALL CAPS short lines)
-    if (/^═+$/.test(line.trim())) {
-      doc.setDrawColor(232, 51, 74);
-      doc.setLineWidth(0.4);
-      doc.line(margin, y - 1, pageW - margin, y - 1);
-      y += 1;
-      return;
-    }
-
-    // Bold headings (short all-caps lines)
-    if (/^[A-Z\s&\/]{4,40}$/.test(line.trim()) && line.trim().length > 3) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.8);
-      doc.setTextColor(26, 39, 68);
-      doc.text(line, margin, y);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(9.5);
-      doc.setTextColor(30, 30, 30);
-    } else {
-      doc.text(line, margin, y);
-    }
-    y += lineH;
-  });
-
-  // Footer
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFillColor(248, 250, 253);
-    doc.rect(0, pageH - 10, pageW, 10, 'F');
-    doc.setTextColor(150, 150, 150);
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Page ${i} of ${pageCount}`, pageW / 2, pageH - 4, { align: 'center' });
-    const o = currentModalOpp;
-    if (o) doc.text(`${o.university} · ${o.title.slice(0,50)}`, margin, pageH - 4);
+  // Build a clean printable HTML page
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>${label} — Zhang Danyi</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', serif;
+    font-size: 11pt;
+    line-height: 1.75;
+    color: #1a1a1a;
+    padding: 0;
   }
+  .header {
+    background: #1a2744;
+    color: white;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-label { font-size: 13pt; font-weight: bold; letter-spacing: 1px; }
+  .header-name  { font-size: 10pt; opacity: 0.85; }
+  .meta {
+    background: #f0f4f8;
+    padding: 8px 40px;
+    font-size: 9pt;
+    color: #555;
+    border-bottom: 2px solid #e8334a;
+  }
+  .body {
+    padding: 32px 40px;
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+  @media print {
+    .no-print { display: none; }
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <span class="header-label">${label.toUpperCase()}</span>
+    <span class="header-name">Zhang Danyi</span>
+  </div>
+  <div class="meta">${o.university || ''} &middot; ${(o.title || '').slice(0,80)}</div>
+  <div class="body">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+</body>
+</html>`;
 
-  doc.save(`${filename}.pdf`);
+  // Open in new window and trigger print dialog (Save as PDF)
+  const win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  // Short delay to let fonts render, then print
+  setTimeout(() => {
+    win.print();
+  }, 600);
 }
 
 // ── Event listeners ────────────────────────────────────────
