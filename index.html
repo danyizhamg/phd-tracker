@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PhD Opportunities Tracker</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- jsPDF for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -111,24 +113,27 @@
         <div class="tab-panel active" id="tab-cv">
           <div class="material-toolbar">
             <button class="btn-copy" onclick="copyMaterial('cv')">📋 复制</button>
-            <button class="btn-download" onclick="downloadMaterial('cv', 'txt')">⬇ 下载 TXT</button>
-            <button class="btn-download" onclick="downloadMaterial('cv', 'md')">⬇ 下载 MD</button>
+            <button class="btn-download" onclick="downloadMaterial('cv', 'pdf')">⬇ PDF</button>
+            <button class="btn-download" onclick="downloadMaterial('cv', 'txt')">⬇ TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('cv', 'md')">⬇ MD</button>
           </div>
           <div class="material-text" id="material-cv"></div>
         </div>
         <div class="tab-panel" id="tab-cl">
           <div class="material-toolbar">
             <button class="btn-copy" onclick="copyMaterial('cl')">📋 复制</button>
-            <button class="btn-download" onclick="downloadMaterial('cl', 'txt')">⬇ 下载 TXT</button>
-            <button class="btn-download" onclick="downloadMaterial('cl', 'md')">⬇ 下载 MD</button>
+            <button class="btn-download" onclick="downloadMaterial('cl', 'pdf')">⬇ PDF</button>
+            <button class="btn-download" onclick="downloadMaterial('cl', 'txt')">⬇ TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('cl', 'md')">⬇ MD</button>
           </div>
           <div class="material-text" id="material-cl"></div>
         </div>
         <div class="tab-panel" id="tab-rp">
           <div class="material-toolbar">
             <button class="btn-copy" onclick="copyMaterial('rp')">📋 复制</button>
-            <button class="btn-download" onclick="downloadMaterial('rp', 'txt')">⬇ 下载 TXT</button>
-            <button class="btn-download" onclick="downloadMaterial('rp', 'md')">⬇ 下载 MD</button>
+            <button class="btn-download" onclick="downloadMaterial('rp', 'pdf')">⬇ PDF</button>
+            <button class="btn-download" onclick="downloadMaterial('rp', 'txt')">⬇ TXT</button>
+            <button class="btn-download" onclick="downloadMaterial('rp', 'md')">⬇ MD</button>
           </div>
           <div class="material-text" id="material-rp"></div>
         </div>
