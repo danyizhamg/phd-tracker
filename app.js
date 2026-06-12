@@ -353,9 +353,39 @@ function applyFilters() {
 }
 
 // ── Render ─────────────────────────────────────────────────
+function makeCardHTML(o, i) {
+  const p = userProfile;
+  const score = matchScore(o);
+  const matchBadge = (p?.interests?.length && score > 0)
+    ? `<span class="match-badge">⭐ ${score} match${score>1?'es':''}</span>` : '';
+  return `
+  <div class="card ${score > 0 ? 'card-matched' : ''}" onclick="openModal(${i})" data-idx="${i}">
+    ${o.status === 'upcoming' ? '<span class="status-upcoming">Upcoming</span>' : ''}
+    ${matchBadge}
+    <div class="card-top">
+      <div class="card-flag">${o.flag}</div>
+      <div class="card-header-text">
+        <div class="card-university">${o.university} · ${o.country}</div>
+        <div class="card-title">${o.title}</div>
+      </div>
+    </div>
+    <div class="field-tags">${fieldTags(o.field)}</div>
+    <div class="card-meta">
+      <span class="stipend">💰 ${o.stipend}</span>
+      ${deadlineBadge(o)}
+    </div>
+    ${o.qs_rank ? `<div class="card-qs"><span class="qs-badge">🏆 QS #${o.qs_rank}</span></div>` : ''}
+    ${o.other_language_required ? `<div><span class="lang-warning">⚠️ ${o.other_language_note}</span></div>` : ''}
+    <div class="card-footer">
+      <span class="added-date">Added ${o.added_date}</span>
+      <a class="btn-view" href="${o.url}" target="_blank" rel="noopener"
+         onclick="event.stopPropagation()">View Position →</a>
+    </div>
+  </div>`;
+}
+
 function renderCards() {
   const grid = document.getElementById('cards-grid');
-  const p    = userProfile;
   document.getElementById('results-count').textContent =
     `Showing ${filtered.length} of ${allOpportunities.length} positions`;
 
@@ -367,35 +397,32 @@ function renderCards() {
     return;
   }
 
-  grid.innerHTML = filtered.map((o, i) => {
-    const score = matchScore(o);
-    const matchBadge = (p?.interests?.length && score > 0)
-      ? `<span class="match-badge">⭐ ${score} match${score>1?'es':''}</span>` : '';
-    return `
-    <div class="card ${score > 0 ? 'card-matched' : ''}" onclick="openModal(${i})" data-idx="${i}">
-      ${o.status === 'upcoming' ? '<span class="status-upcoming">Upcoming</span>' : ''}
-      ${matchBadge}
-      <div class="card-top">
-        <div class="card-flag">${o.flag}</div>
-        <div class="card-header-text">
-          <div class="card-university">${o.university} · ${o.country}</div>
-          <div class="card-title">${o.title}</div>
-        </div>
-      </div>
-      <div class="field-tags">${fieldTags(o.field)}</div>
-      <div class="card-meta">
-        <span class="stipend">💰 ${o.stipend}</span>
-        ${deadlineBadge(o)}
-      </div>
-      ${o.qs_rank ? `<div class="card-qs"><span class="qs-badge">🏆 QS World Ranking #${o.qs_rank}</span></div>` : ''}
-      ${o.other_language_required ? `<div><span class="lang-warning">⚠️ ${o.other_language_note}</span></div>` : ''}
-      <div class="card-footer">
-        <span class="added-date">Added ${o.added_date}</span>
-        <a class="btn-view" href="${o.url}" target="_blank" rel="noopener"
-           onclick="event.stopPropagation()">View Position →</a>
-      </div>
-    </div>`;
-  }).join('');
+  // Split into QS Top 100 vs rest
+  const top100  = filtered.filter(o => o.qs_rank && o.qs_rank <= 100);
+  const others  = filtered.filter(o => !o.qs_rank || o.qs_rank > 100);
+
+  // Global index map so openModal(i) still uses filtered[] index
+  let html = '';
+
+  if (top100.length > 0) {
+    html += `<div class="section-divider">
+      <span class="section-label">🏆 QS Top 100 Universities &nbsp;<small>${top100.length} position${top100.length>1?'s':''}</small></span>
+    </div>
+    <div class="cards-section">`;
+    html += top100.map(o => makeCardHTML(o, filtered.indexOf(o))).join('');
+    html += `</div>`;
+  }
+
+  if (others.length > 0) {
+    html += `<div class="section-divider" style="margin-top:${top100.length>0?'32px':'0'}">
+      <span class="section-label">📌 Other Fully Funded Positions &nbsp;<small>${others.length} position${others.length>1?'s':''}</small></span>
+    </div>
+    <div class="cards-section">`;
+    html += others.map(o => makeCardHTML(o, filtered.indexOf(o))).join('');
+    html += `</div>`;
+  }
+
+  grid.innerHTML = html;
 }
 
 // ── Modal ──────────────────────────────────────────────────
