@@ -942,6 +942,51 @@ select:focus { border-color: #1a2744; }
   width: 100%;
 }
 
+/* ── Page Tabs ── */
+.page-tabs {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto 0;
+  padding: 0 24px;
+  gap: 0;
+  border-bottom: 2px solid #e2e8f0;
+}
+.page-tab {
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  background: none;
+  color: #a0aec0;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.2px;
+}
+.page-tab:hover { color: #1a2744; }
+.page-tab-active {
+  color: #1a2744;
+  border-bottom-color: #1a2744;
+}
+.page-tab-applied .applied-count {
+  background: #e8334a;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 800;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0 5px;
+  display: inline-block;
+}
+.page-tab-applied.page-tab-active { color: #e8334a; border-bottom-color: #e8334a; }
+
 /* ── Nav Buttons ── */
 .btn-nav {
   padding: 7px 16px;
@@ -1143,18 +1188,40 @@ select:focus { border-color: #1a2744; }
 }
 .btn-remove-app:hover { color: #e8334a; }
 
-/* ── Apply Toggle Button on Cards ── */
-.btn-apply-toggle {
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1.5px solid #1a2744;
-  background: white;
-  color: #1a2744;
-  font-size: 0.75rem;
-  font-weight: 600;
+/* ── Card Footer Buttons ── */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.btn-view, .btn-apply-toggle {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+  box-sizing: border-box;
+}
+.btn-view {
+  background: #1a2744;
+  color: white;
+  border: 2px solid #1a2744;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-view:hover { background: #2d4a8a; border-color: #2d4a8a; }
+.btn-apply-toggle {
+  background: white;
+  color: #1a2744;
+  border: 2px solid #1a2744;
 }
 .btn-apply-toggle:hover { background: #1a2744; color: white; }
 .btn-apply-toggle.btn-applied {
