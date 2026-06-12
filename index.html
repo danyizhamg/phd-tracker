@@ -18,6 +18,8 @@
       <div class="header-stats">
         <div class="stat-pill" id="total-count">— positions</div>
         <div class="stat-pill" id="last-updated">Loading…</div>
+        <button class="btn-nav" id="btn-view-opportunities" onclick="showPage('opportunities')">🔍 Opportunities</button>
+        <button class="btn-nav btn-nav-applied" id="btn-view-applied" onclick="showPage('applied')">📋 My Applications <span class="applied-count" id="applied-count-badge" style="display:none">0</span></button>
         <button class="btn-profile" id="btn-open-profile">⚙️ My Profile</button>
       </div>
     </div>
@@ -73,10 +75,29 @@
     <span id="results-count">Loading…</span>
   </div>
 
-  <!-- CARDS GRID -->
-  <main class="cards-grid" id="cards-grid">
-    <div class="loading-spinner">Loading opportunities…</div>
-  </main>
+  <!-- PAGE: OPPORTUNITIES -->
+  <div id="page-opportunities">
+    <!-- CARDS GRID -->
+    <main class="cards-grid" id="cards-grid">
+      <div class="loading-spinner">Loading opportunities…</div>
+    </main>
+  </div>
+
+  <!-- PAGE: MY APPLICATIONS -->
+  <div id="page-applied" style="display:none">
+    <div class="applied-page">
+      <div class="applied-header">
+        <h2>📋 My Applications</h2>
+        <p class="applied-desc">Track the status of your PhD applications. Click any status badge to update it.</p>
+      </div>
+      <div id="applied-empty" class="applied-empty" style="display:none">
+        <div class="empty-icon">📭</div>
+        <p>No applications yet.</p>
+        <small>Go to Opportunities and click <strong>"✅ Mark as Applied"</strong> on any position.</small>
+      </div>
+      <div class="applied-list" id="applied-list"></div>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════════
        PROFILE MODAL
