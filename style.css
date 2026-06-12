@@ -125,9 +125,7 @@ select:focus { border-color: #1a2744; }
   max-width: 1200px;
   margin: 16px auto 40px;
   padding: 0 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
+  display: block;
 }
 
 .loading-spinner {
@@ -901,6 +899,47 @@ select:focus { border-color: #1a2744; }
 .card-qs {
   margin-top: 3px;
   margin-bottom: 2px;
+}
+
+/* ── Section Dividers ── */
+.section-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 8px 0 16px;
+  gap: 12px;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #e2e8f0);
+}
+.section-divider::before {
+  background: linear-gradient(to left, transparent, #e2e8f0);
+}
+.section-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a2744;
+  white-space: nowrap;
+  padding: 4px 14px;
+  background: #f0f4ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 20px;
+  letter-spacing: 0.2px;
+}
+.section-label small {
+  font-weight: 400;
+  color: #718096;
+  font-size: 0.78rem;
+}
+.cards-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 /* ── Footer ── */
