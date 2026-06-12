@@ -324,7 +324,10 @@ function applyFilters() {
       if (!hay.toLowerCase().includes(field.toLowerCase())) return false;
     }
 
-    if (region !== 'all' && o.region !== region) return false;
+    if (region !== 'all') {
+      if (region === 'USA' && o.country !== 'USA') return false;
+      else if (region !== 'USA' && o.region !== region) return false;
+    }
 
     if (deadline !== 'all') {
       if (o.deadline_type === 'rolling' || o.status === 'upcoming') return false;
