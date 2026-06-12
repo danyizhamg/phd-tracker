@@ -378,7 +378,8 @@ function renderCards() {
       <div class="card-top">
         <div class="card-flag">${o.flag}</div>
         <div class="card-header-text">
-          <div class="card-university">${o.university} · ${o.country}${o.qs_rank ? ` <span class="qs-badge">QS #${o.qs_rank}</span>` : ''}</div>
+          <div class="card-university">${o.university} · ${o.country}</div>
+          ${o.qs_rank ? `<div class="card-qs"><span class="qs-badge">QS #${o.qs_rank}</span></div>` : ''}
           <div class="card-title">${o.title}</div>
         </div>
       </div>
@@ -408,7 +409,8 @@ function openModal(idx) {
 
   content.innerHTML = `
     <div class="modal-flag">${o.flag}</div>
-    <div class="modal-university">${o.university} · ${o.country}${o.qs_rank ? ` &nbsp;<span class="qs-badge qs-badge-lg">QS #${o.qs_rank}</span>` : '<span class="qs-badge qs-unranked">Unranked / Institute</span>'}</div>
+    <div class="modal-university">${o.university} · ${o.country}</div>
+    <div>${o.qs_rank ? `<span class="qs-badge qs-badge-lg">QS #${o.qs_rank}</span>` : '<span class="qs-badge qs-unranked">Research Institute / Consortium</span>'}</div>
     <div class="modal-title">${o.title}</div>
 
     <div class="modal-section">
