@@ -898,6 +898,10 @@ select:focus { border-color: #1a2744; }
   color: #718096;
   font-weight: 500;
 }
+.card-qs {
+  margin-top: 3px;
+  margin-bottom: 2px;
+}
 
 /* ── Footer ── */
 .site-footer {
