@@ -1014,8 +1014,8 @@ function renderAppliedPage() {
 function showPage(page) {
   document.getElementById('page-opportunities').style.display = page==='opportunities' ? '' : 'none';
   document.getElementById('page-applied').style.display       = page==='applied'       ? '' : 'none';
-  document.getElementById('btn-view-opportunities').classList.toggle('btn-nav-active', page==='opportunities');
-  document.getElementById('btn-view-applied').classList.toggle('btn-nav-active', page==='applied');
+  document.getElementById('btn-view-opportunities').classList.toggle('page-tab-active', page==='opportunities');
+  document.getElementById('btn-view-applied').classList.toggle('page-tab-active', page==='applied');
   if (page === 'applied') renderAppliedPage();
 }
 
