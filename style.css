@@ -1188,42 +1188,45 @@ select:focus { border-color: #1a2744; }
 }
 .btn-remove-app:hover { color: #e8334a; }
 
-/* ── Card Footer Buttons ── */
+/* ── Card Footer & Actions ── */
 .card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
 }
 .btn-view, .btn-apply-toggle {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   text-align: center;
-  padding: 8px 12px;
+  padding: 8px 0;
   border-radius: 8px;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
-  white-space: nowrap;
   box-sizing: border-box;
+  display: block;
 }
 .btn-view {
   background: #1a2744;
   color: white;
   border: 2px solid #1a2744;
   text-decoration: none;
-  display: inline-block;
 }
 .btn-view:hover { background: #2d4a8a; border-color: #2d4a8a; }
 .btn-apply-toggle {
   background: white;
   color: #1a2744;
-  border: 2px solid #1a2744;
+  border: 2px solid #c7d2fe;
 }
-.btn-apply-toggle:hover { background: #1a2744; color: white; }
+.btn-apply-toggle:hover { background: #eef2ff; border-color: #1a2744; }
 .btn-apply-toggle.btn-applied {
   background: #f0fff4;
   border-color: #38a169;
