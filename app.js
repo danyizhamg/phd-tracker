@@ -379,7 +379,6 @@ function renderCards() {
         <div class="card-flag">${o.flag}</div>
         <div class="card-header-text">
           <div class="card-university">${o.university} · ${o.country}</div>
-          ${o.qs_rank ? `<div class="card-qs"><span class="qs-badge">QS #${o.qs_rank}</span></div>` : ''}
           <div class="card-title">${o.title}</div>
         </div>
       </div>
@@ -388,6 +387,7 @@ function renderCards() {
         <span class="stipend">💰 ${o.stipend}</span>
         ${deadlineBadge(o)}
       </div>
+      ${o.qs_rank ? `<div class="card-qs"><span class="qs-badge">🏆 QS World Ranking #${o.qs_rank}</span></div>` : ''}
       ${o.other_language_required ? `<div><span class="lang-warning">⚠️ ${o.other_language_note}</span></div>` : ''}
       <div class="card-footer">
         <span class="added-date">Added ${o.added_date}</span>
