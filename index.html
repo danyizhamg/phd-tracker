@@ -18,8 +18,6 @@
       <div class="header-stats">
         <div class="stat-pill" id="total-count">— positions</div>
         <div class="stat-pill" id="last-updated">Loading…</div>
-        <button class="btn-nav" id="btn-view-opportunities" onclick="showPage('opportunities')">🔍 Opportunities</button>
-        <button class="btn-nav btn-nav-applied" id="btn-view-applied" onclick="showPage('applied')">📋 My Applications <span class="applied-count" id="applied-count-badge" style="display:none">0</span></button>
         <button class="btn-profile" id="btn-open-profile">⚙️ My Profile</button>
       </div>
     </div>
@@ -73,6 +71,17 @@
   <!-- RESULTS COUNT -->
   <div class="results-bar">
     <span id="results-count">Loading…</span>
+  </div>
+
+  <!-- PAGE TABS -->
+  <div class="page-tabs">
+    <button class="page-tab page-tab-active" id="btn-view-opportunities" onclick="showPage('opportunities')">
+      🔍 Find Positions
+    </button>
+    <button class="page-tab page-tab-applied" id="btn-view-applied" onclick="showPage('applied')">
+      📋 My Applications
+      <span class="applied-count" id="applied-count-badge" style="display:none">0</span>
+    </button>
   </div>
 
   <!-- PAGE: OPPORTUNITIES -->
