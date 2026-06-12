@@ -875,6 +875,30 @@ select:focus { border-color: #1a2744; }
   transition: color 0.3s;
 }
 
+/* ── QS Rank Badge ── */
+.qs-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #1a2744, #2d4a8a);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  vertical-align: middle;
+  margin-left: 6px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.qs-badge-lg {
+  font-size: 0.78rem;
+  padding: 3px 10px;
+}
+.qs-unranked {
+  background: #e2e8f0;
+  color: #718096;
+  font-weight: 500;
+}
+
 /* ── Footer ── */
 .site-footer {
   text-align: center;
