@@ -848,7 +848,186 @@ setupDocUpload('upload-rp', 'p-rp-text', 'rp-count');
 userProfile = loadProfile();
 applyUserProfile();
 
-// First visit — show profile setup
 // Profile modal only opens when user clicks the button — no auto-popup
 
 loadData();
+
+// ── Applications Tracker ───────────────────────────────────────────────────────
+const APPLIED_KEY = 'phd_tracker_applied';
+
+const STATUS_CONFIG = {
+  waiting:   { label: '⏳ Awaiting Response', color: '#718096', bg: '#f7fafc' },
+  email:     { label: '📧 Email Received',    color: '#d69e2e', bg: '#fffff0' },
+  interview: { label: '📞 Interview Invited',  color: '#3182ce', bg: '#ebf8ff' },
+  offer:     { label: '🎉 Offer Received',    color: '#38a169', bg: '#f0fff4' },
+  rejected:  { label: '❌ Rejected',            color: '#e53e3e', bg: '#fff5f5' },
+  withdrawn: { label: '🚫 Withdrawn',          color: '#a0aec0', bg: '#f7fafc' },
+};
+
+function loadApplied() {
+  try { return JSON.parse(localStorage.getItem(APPLIED_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveApplied(data) {
+  localStorage.setItem(APPLIED_KEY, JSON.stringify(data));
+}
+
+function markApplied(id) {
+  const applied = loadApplied();
+  if (applied[id]) {
+    // Already applied — ask to remove
+    if (!confirm('Remove this from your applications list?')) return;
+    delete applied[id];
+    saveApplied(applied);
+    renderCards();
+    updateAppliedBadge();
+    return;
+  }
+  const opp = allOpportunities.find(o => o.id === id);
+  if (!opp) return;
+  applied[id] = {
+    id,
+    title: opp.title,
+    university: opp.university,
+    flag: opp.flag,
+    country: opp.country,
+    qs_rank: opp.qs_rank || null,
+    url: opp.url,
+    deadline: opp.deadline,
+    appliedDate: new Date().toISOString().split('T')[0],
+    status: 'waiting',
+    notes: '',
+    timeline: [
+      { date: new Date().toISOString().split('T')[0], event: '📤 Application submitted' }
+    ]
+  };
+  saveApplied(applied);
+  renderCards();
+  updateAppliedBadge();
+  // Show confirmation
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.textContent = `✅ Added to My Applications: ${opp.university}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function updateAppliedBadge() {
+  const applied = loadApplied();
+  const count = Object.keys(applied).length;
+  const badge = document.getElementById('applied-count-badge');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function updateApplicationStatus(id, newStatus) {
+  const applied = loadApplied();
+  if (!applied[id]) return;
+  const oldStatus = applied[id].status;
+  applied[id].status = newStatus;
+  const cfg = STATUS_CONFIG[newStatus];
+  applied[id].timeline.push({
+    date: new Date().toISOString().split('T')[0],
+    event: `${cfg.label} — status updated from ${STATUS_CONFIG[oldStatus]?.label || oldStatus}`
+  });
+  saveApplied(applied);
+  renderAppliedPage();
+}
+
+function addApplicationNote(id, note) {
+  if (!note.trim()) return;
+  const applied = loadApplied();
+  if (!applied[id]) return;
+  applied[id].timeline.push({
+    date: new Date().toISOString().split('T')[0],
+    event: `📝 Note: ${note.trim()}`
+  });
+  applied[id].notes = note.trim();
+  saveApplied(applied);
+  renderAppliedPage();
+}
+
+function renderAppliedPage() {
+  const applied = loadApplied();
+  const list = document.getElementById('applied-list');
+  const empty = document.getElementById('applied-empty');
+  const entries = Object.values(applied);
+
+  if (entries.length === 0) {
+    empty.style.display = 'flex';
+    list.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Sort: offer first, then interview, then waiting, then rejected
+  const order = ['offer','interview','email','waiting','withdrawn','rejected'];
+  entries.sort((a,b) => order.indexOf(a.status) - order.indexOf(b.status));
+
+  list.innerHTML = entries.map(app => {
+    const cfg = STATUS_CONFIG[app.status] || STATUS_CONFIG.waiting;
+    const statusOptions = Object.entries(STATUS_CONFIG).map(([k,v]) =>
+      `<option value="${k}" ${app.status===k?'selected':''}>${v.label}</option>`
+    ).join('');
+    const timeline = (app.timeline || []).slice().reverse().map(t =>
+      `<div class="timeline-item"><span class="timeline-date">${t.date}</span><span class="timeline-event">${t.event}</span></div>`
+    ).join('');
+    const qsBadge = app.qs_rank ? `<span class="qs-badge">QS #${app.qs_rank}</span>` : '';
+    return `
+    <div class="applied-card" id="appcard-${app.id}">
+      <div class="applied-card-header">
+        <div class="applied-card-left">
+          <div class="applied-uni">${app.flag} ${app.university} · ${app.country} ${qsBadge}</div>
+          <div class="applied-title">${app.title}</div>
+          <div class="applied-meta">Applied: ${app.appliedDate} · Deadline: ${app.deadline || 'Rolling'}</div>
+        </div>
+        <div class="applied-card-right">
+          <div class="status-badge" style="color:${cfg.color};background:${cfg.bg};border-color:${cfg.color}">
+            ${cfg.label}
+          </div>
+          <select class="status-select" onchange="updateApplicationStatus('${app.id}', this.value)">
+            ${statusOptions}
+          </select>
+        </div>
+      </div>
+      <div class="timeline-section">
+        <div class="timeline-title">🗓 Timeline</div>
+        <div class="timeline-list">${timeline}</div>
+      </div>
+      <div class="note-section">
+        <input class="note-input" id="note-${app.id}" type="text" placeholder="Add a note (email received, interview date, etc.)" value="" />
+        <button class="btn-add-note" onclick="addApplicationNote('${app.id}', document.getElementById('note-${app.id}').value); document.getElementById('note-${app.id}').value=''">➕ Add Note</button>
+      </div>
+      <div class="applied-card-footer">
+        <a href="${app.url}" target="_blank" class="btn-view-small">View Position →</a>
+        <button class="btn-remove-app" onclick="if(confirm('Remove from applications?')){const a=loadApplied();delete a['${app.id}'];saveApplied(a);renderAppliedPage();updateAppliedBadge();renderCards();}">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showPage(page) {
+  document.getElementById('page-opportunities').style.display = page==='opportunities' ? '' : 'none';
+  document.getElementById('page-applied').style.display       = page==='applied'       ? '' : 'none';
+  document.getElementById('btn-view-opportunities').classList.toggle('btn-nav-active', page==='opportunities');
+  document.getElementById('btn-view-applied').classList.toggle('btn-nav-active', page==='applied');
+  if (page === 'applied') renderAppliedPage();
+}
+
+// Patch makeCardHTML to add Apply button
+const _origMakeCard = makeCardHTML;
+window.makeCardHTML = function(o, i) {
+  const html = _origMakeCard(o, i);
+  const applied = loadApplied();
+  const isApplied = !!applied[o.id];
+  const applyBtn = `<button class="btn-apply-toggle ${isApplied?'btn-applied':''}" onclick="event.stopPropagation();markApplied('${o.id}')">${isApplied?'✅ Applied':'➕ Mark as Applied'}</button>`;
+  // Insert before closing </div> of card-footer
+  return html.replace('</div>\n  </div>', `${applyBtn}\n    </div>\n  </div>`);
+};
+
+updateAppliedBadge();
