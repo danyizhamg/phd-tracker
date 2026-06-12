@@ -378,8 +378,14 @@ function makeCardHTML(o, i) {
     ${o.other_language_required ? `<div><span class="lang-warning">⚠️ ${o.other_language_note}</span></div>` : ''}
     <div class="card-footer">
       <span class="added-date">Added ${o.added_date}</span>
+    </div>
+    <div class="card-actions">
       <a class="btn-view" href="${o.url}" target="_blank" rel="noopener"
          onclick="event.stopPropagation()">View Position →</a>
+      <button class="btn-apply-toggle ${loadApplied()[o.id] ? 'btn-applied' : ''}" 
+              onclick="event.stopPropagation();markApplied('${o.id}')">
+        ${loadApplied()[o.id] ? '✅ Applied' : '➕ Mark as Applied'}
+      </button>
     </div>
   </div>`;
 }
@@ -1018,16 +1024,5 @@ function showPage(page) {
   document.getElementById('btn-view-applied').classList.toggle('page-tab-active', page==='applied');
   if (page === 'applied') renderAppliedPage();
 }
-
-// Patch makeCardHTML to add Apply button
-const _origMakeCard = makeCardHTML;
-window.makeCardHTML = function(o, i) {
-  const html = _origMakeCard(o, i);
-  const applied = loadApplied();
-  const isApplied = !!applied[o.id];
-  const applyBtn = `<button class="btn-apply-toggle ${isApplied?'btn-applied':''}" onclick="event.stopPropagation();markApplied('${o.id}')">${isApplied?'✅ Applied':'➕ Mark as Applied'}</button>`;
-  // Insert before closing </div> of card-footer
-  return html.replace('</div>\n  </div>', `${applyBtn}\n    </div>\n  </div>`);
-};
 
 updateAppliedBadge();
