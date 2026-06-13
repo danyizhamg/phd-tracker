@@ -841,5 +841,141 @@
     "added_date": "2026-06-12",
     "source": "UChicago Economics",
     "qs_rank": 11
+  },
+  {
+    "id": "dtu-climate-economics-2026",
+    "title": "PhD Scholarship in Climate Economics and Risk Management",
+    "university": "Technical University of Denmark (DTU)",
+    "country": "Denmark",
+    "flag": "🇩🇰",
+    "region": "Europe",
+    "field": [
+      "Climate Economics",
+      "Environmental Economics",
+      "Risk Management"
+    ],
+    "tags": [
+      "climate",
+      "economics",
+      "risk",
+      "denmark",
+      "Horizon-Europe",
+      "fully-funded"
+    ],
+    "stipend": "Danish PhD salary (~DKK 30,000-35,000/month)",
+    "deadline": "",
+    "deadline_type": "rolling",
+    "status": "open",
+    "supervisor": "DTU Management faculty",
+    "language_req": "English",
+    "other_language_required": false,
+    "other_language_note": "",
+    "description": "PhD scholarship in Climate Economics and Risk Management at DTU Management. Research on damage costs of climate extremes, adaptation strategies, and disaster risk management. Part of Horizon Europe-funded international research projects. Interdisciplinary team spanning climate hazards, impact assessment, and economics.",
+    "url": "https://www.efdinitiative.org/about-efd/job-openings/phd-scholarship-climate-economics",
+    "added_date": "2026-06-13",
+    "source": "EfD Initiative",
+    "qs_rank": 104
+  },
+  {
+    "id": "kit-melbourne-env-dual-2026",
+    "title": "Dual-Degree PhD in Environmental Sciences (Germany-Australia)",
+    "university": "KIT / University of Hohenheim / University of Melbourne",
+    "country": "Germany / Australia",
+    "flag": "🇩🇪🇦🇺",
+    "region": "Europe",
+    "field": [
+      "Environmental Science",
+      "Climate Resilience",
+      "Biodiversity",
+      "AI"
+    ],
+    "tags": [
+      "environment",
+      "dual-degree",
+      "Germany",
+      "Australia",
+      "AI",
+      "climate",
+      "biodiversity"
+    ],
+    "stipend": "Fully funded (tuition + stipend)",
+    "deadline": "2026-05-17",
+    "deadline_type": "fixed",
+    "status": "upcoming",
+    "supervisor": "International supervisory teams",
+    "language_req": "English",
+    "other_language_required": false,
+    "other_language_note": "",
+    "description": "6 fully funded dual-degree PhD positions between Germany (KIT, University of Hohenheim) and Australia (University of Melbourne). Research areas: land-use change, biodiversity modeling, AI applications in environmental science, forest ecology, climate resilience. Joint doctoral degree, access to research infrastructure across two continents.",
+    "url": "https://agristok.net/2026/04/06/fully-funded-phd-environmental-sciences-germany-australia-2026/",
+    "added_date": "2026-06-13",
+    "source": "Agristok",
+    "qs_rank": null
+  },
+  {
+    "id": "nottingham-ai-dtc-2026",
+    "title": "Faculty of Science Doctoral Training Centre in Artificial Intelligence",
+    "university": "University of Nottingham",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "region": "Europe",
+    "field": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Science"
+    ],
+    "tags": [
+      "AI",
+      "UK",
+      "UKRI",
+      "multidisciplinary",
+      "cohort"
+    ],
+    "stipend": "£21,805/year (UKRI rate) + £3,000 research support + home tuition",
+    "deadline": "2026-07-31",
+    "deadline_type": "fixed",
+    "status": "open",
+    "supervisor": "Various faculty across disciplines",
+    "language_req": "English",
+    "other_language_required": false,
+    "other_language_note": "",
+    "description": "New AI Doctoral Training Centre at University of Nottingham. Multidisciplinary AI research across Science, Engineering, Medicine, Arts, and Social Sciences. Fully funded 3.5-year PhD with tax-free stipend. Note: Currently open to UK home students only. Start date October 1, 2026.",
+    "url": "https://www.nottingham.ac.uk/computerscience/studywithus/postgraduateresearch/nottinghamdtcinai.aspx",
+    "added_date": "2026-06-13",
+    "source": "University of Nottingham",
+    "qs_rank": 100
+  },
+  {
+    "id": "swansea-solar-solutions-2026",
+    "title": "Fully Funded PhD in Advancing Sustainable Solar Solutions",
+    "university": "Swansea University",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "region": "Europe",
+    "field": [
+      "Materials Science",
+      "Energy Engineering",
+      "Renewable Energy"
+    ],
+    "tags": [
+      "solar",
+      "materials",
+      "renewable-energy",
+      "UK",
+      "fully-funded"
+    ],
+    "stipend": "Full studentship (tuition + stipend)",
+    "deadline": "",
+    "deadline_type": "rolling",
+    "status": "open",
+    "supervisor": "",
+    "language_req": "English",
+    "other_language_required": false,
+    "other_language_note": "",
+    "description": "Fully funded PhD studentship in Materials Engineering at Swansea University. Research on sustainable solar solutions to transform global energy access. Focus on advancing solar technology for energy-poor regions. Part of UK research initiative on renewable energy.",
+    "url": "https://www.postgraduatestudentships.co.uk/opportunity/materials-engineering-fully-funded-phd-studentship-in-advancing-sustainable-solar-solutions-to-transform-global-energy-access-rs934/96268",
+    "added_date": "2026-06-13",
+    "source": "PostgraduateStudentships",
+    "qs_rank": 421
   }
 ]
